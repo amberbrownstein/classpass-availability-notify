@@ -1,7 +1,7 @@
 // WARNING: For POST requests, body is set to null by browsers.
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+import { XMLHttpRequest } from "xmlhttprequest";
 
-function callApi(url, method, data) {
+export default function callApi(url, method, headers, data) {
     return new Promise((resolve) => {
         var xhr = new XMLHttpRequest();
         xhr.withCredentials = true;
@@ -12,11 +12,13 @@ function callApi(url, method, data) {
         });
 
         xhr.open(method, url);
-        //xhr.setRequestHeader("CP-Authorization", `Token ${token}`);
-        xhr.setRequestHeader("Content-Type", "application/json");
 
-        xhr.send(JSON.stringify(data));
+        for (const [key, value] of Object.entries(headers))
+            xhr.setRequestHeader(key, value);
+
+        if (data)
+            data = JSON.stringify(data);
+
+        xhr.send(data);
     })
 }
-
-module.exports = {callApi};

@@ -1,12 +1,36 @@
-let S = require("./scheduler.js");
-let CS = require("./checkSchedule.js");
-async function test() {
-    const ret = await CS.checkSchedule(new Date(), 7, [188559, 41738]);
-    ret.forEach((ret) => console.log(`\nReturned: ${JSON.stringify(ret)}`));
+import { writeFileSync }  from 'fs';
+import updateFileData from "./updateFileData.js";
+import checkSchedule from "./checkSchedule.js";
+
+async function testCheckSchedule(startDate, daysInFuture, venues) {
+    const openClasses = await checkSchedule(startDate, daysInFuture, venues);
+    console.log('\ntestCheckSchedule complete. Open Classes:')
+    openClasses.forEach((openClass) => console.log(`\n${JSON.stringify(openClass)}`));
+    return openClasses;
 }
-async function testFileStuff() {
-    const newData = await CS.checkSchedule(new Date(), 7, [188559, 41738]);
-    const sendEmail = S.updateFileData('currentAvailability.json', newData);
+function testUpdateFileData(openClasses, fileName) {
+    const newClasses = updateFileData(fileName, openClasses);
+    console.log('\ntestUpdateFileData complete. New Classes:')
+    newClasses.forEach((newClass) => console.log(`\n${JSON.stringify(newClass)}`));
+    return newClasses;
+}
+async function testEmail(newClasses, fileName) {
+    const emailSent = await triggerEmail(newClasses, fileName);
+    console.log(`\ntestEmail complete. Result:\n${emailSent ? 'SUCCESS' : 'FAIL'}`);
+    return emailSent;
 }
 
-testFileStuff();
+async function endToEndTest(startDate, daysInFuture, venues, fileName) {
+    const newClasses = await testCheckSchedule(startDate, daysInFuture, venues)
+        .then((openClasses) => testUpdateFileData(openClasses, fileName))
+        .catch((err) => console.log(err));
+
+    if (newClasses.length > 0)
+        return await testEmail(fileName, newClasses);
+}
+
+const resetFile = (fileName) => writeFileSync(fileName, '');
+
+const success = await endToEndTest(new Date(), 1, [188559, 41738], 'currentAvailability.json');
+console.log(`\ntestEmail complete. Result:\n${success ? 'SUCCESS' : 'FAIL'}`);
+resetFile('currentAvailability.json');
