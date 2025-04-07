@@ -1,6 +1,7 @@
 import { writeFileSync }  from 'fs';
 import updateFileData from "./updateFileData.js";
 import checkSchedule from "./checkSchedule.js";
+import triggerEmail from "./triggerEmail.js";
 
 async function testCheckSchedule(startDate, daysInFuture, venues) {
     const openClasses = await checkSchedule(startDate, daysInFuture, venues);
@@ -15,8 +16,8 @@ function testUpdateFileData(openClasses, fileName) {
     return newClasses;
 }
 async function testEmail(newClasses, fileName) {
-    const emailSent = await triggerEmail(newClasses, fileName);
-    console.log(`\ntestEmail complete. Result:\n${emailSent ? 'SUCCESS' : 'FAIL'}`);
+    const emailResult = await triggerEmail(newClasses, fileName);
+    console.log(`\ntestEmail complete. Result:\n${emailResult}`);
     return emailSent;
 }
 
@@ -31,6 +32,5 @@ async function endToEndTest(startDate, daysInFuture, venues, fileName) {
 
 const resetFile = (fileName) => writeFileSync(fileName, '');
 
-const success = await endToEndTest(new Date(), 1, [188559, 41738], 'currentAvailability.json');
-console.log(`\ntestEmail complete. Result:\n${success ? 'SUCCESS' : 'FAIL'}`);
+await endToEndTest(new Date(), 1, [188559, 41738], 'currentAvailability.json');
 resetFile('currentAvailability.json');

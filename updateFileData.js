@@ -1,5 +1,4 @@
 import { readFileSync, writeFileSync } from 'fs';
-//import checkSchedule from "./checkSchedule.js";
 import triggerEmail from "./triggerEmail.js";
 
 let getNewData = (func, ...params) => func(...params);
