@@ -13,7 +13,7 @@ export default async function checkSchedule(startDate, daysInFuture, venues) {
     const startDayOfMonth = startDate.getDate();
     var classes = new Map();
     const headers = {
-        //"CP-Authorization": `Token ${token}`,
+        "CP-Authorization": `Token ${CP_TOKEN}`,
         "Content-Type": 'application/json'
     };
 
