@@ -1,5 +1,6 @@
-let CA = require("./callApi.js");
-async function checkSchedule(startDate, daysInFuture, venues) {
+import callApi from "./callApi.js";
+
+export default async function checkSchedule(startDate, daysInFuture, venues) {
     const url = "https://classpass.com/_api/v3/search/schedules";
     const method = "POST";
     var data = {
@@ -11,11 +12,15 @@ async function checkSchedule(startDate, daysInFuture, venues) {
     let curDate = new Date(startDate);
     const startDayOfMonth = startDate.getDate();
     var classes = new Map();
+    const headers = {
+        "CP-Authorization": `Token ${process.env.CP_TOKEN}`,
+        "Content-Type": 'application/json'
+    };
 
     for (let i = 0; i < daysInFuture; i++) {
         curDate = new Date(curDate.setDate(startDayOfMonth + i));
         data.date = curDate;
-        const schedules = JSON.parse(await CA.callApi(url, method, data)).schedules;
+        const schedules = JSON.parse(await callApi(url, method, headers, data)).schedules;
 
         schedules.forEach((openClass) => {
             const classDetails = {
@@ -30,5 +35,3 @@ async function checkSchedule(startDate, daysInFuture, venues) {
     }
     return classes;
 }
-
-module.exports = { checkSchedule };

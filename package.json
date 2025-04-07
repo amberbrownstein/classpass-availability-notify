@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "dependencies": {
+    "node-mailjet": "^6.0.8",
+    "xhr": "^2.6.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
