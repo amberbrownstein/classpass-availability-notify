@@ -11,7 +11,7 @@ export default async function checkSchedule(startDate, daysInFuture, venues) {
 
     let curDate = new Date(startDate);
     const startDayOfMonth = startDate.getDate();
-    var classes = new Map();
+    var classes = [];
     const headers = {
         "CP-Authorization": `Token ${process.env.CP_TOKEN}`,
         "Content-Type": 'application/json'
@@ -23,14 +23,13 @@ export default async function checkSchedule(startDate, daysInFuture, venues) {
         const schedules = JSON.parse(await callApi(url, method, headers, data)).schedules;
 
         schedules.forEach((openClass) => {
-            const classDetails = {
-                "dateTime": new Date(openClass.starttime * 1000).toString(),
+            classes.push({
+                "classID": openClass.id,
+                "startTime": new Date(openClass.starttime * 1000).toString(),
                 "location": openClass.venue.subtitle,
                 "teacher": openClass.teacher_name,
                 "credits": openClass.availability.credits
-            };
-
-            classes.set(openClass.id.toString(), classDetails);
+            });
         });
     }
     return classes;

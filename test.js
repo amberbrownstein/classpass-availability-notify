@@ -2,6 +2,8 @@ import { writeFileSync }  from 'fs';
 import updateFileData from "./updateFileData.js";
 import checkSchedule from "./checkSchedule.js";
 import SE from "./sendEmail.cjs";
+import updateOpenClasses from "databaseFunctions.js";
+
 
 async function testCheckSchedule(startDate, daysInFuture, venues) {
     const openClasses = await checkSchedule(startDate, daysInFuture, venues);
@@ -9,12 +11,7 @@ async function testCheckSchedule(startDate, daysInFuture, venues) {
     openClasses.forEach((openClass) => console.log(`\n${JSON.stringify(openClass)}`));
     return openClasses;
 }
-function testUpdateFileData(openClasses, fileName) {
-    const newClasses = updateFileData(fileName, openClasses);
-    console.log('\ntestUpdateFileData complete. New Classes:')
-    newClasses.forEach((newClass) => console.log(`\n${JSON.stringify(newClass)}`));
-    return newClasses;
-}
+
 async function testEmail(newClasses, fileName) {
     const emailResult = await SE.sendEmail(newClasses, fileName);
     console.log(`\ntestEmail complete. Result:\n${emailResult}`);
