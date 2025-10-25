@@ -1,2 +1,2 @@
 # classpass-availability-notify
-Script to check for new openings for classes at specific studios on ClassPass
+A script that will send an email notification when there is a new class opening on ClassPass that fulfills user-defined criteria, such as studio location and timeframe.
